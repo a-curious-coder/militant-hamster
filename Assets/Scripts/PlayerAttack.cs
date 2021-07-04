@@ -12,6 +12,9 @@ public class PlayerAttack : MonoBehaviour
     private PlayerMovement playerMovement;
     private float cooldownTimer = Mathf.Infinity;
 
+    // Animation State
+    const string PLAYER_ATTACK = "Attack";
+
     private void Awake() {
         anim = GetComponent<Animator>();
         playerMovement = GetComponent<PlayerMovement>();
@@ -25,13 +28,16 @@ public class PlayerAttack : MonoBehaviour
     }
 
     private void Attack()   {
-        anim.SetTrigger("attack");
+        playerMovement.ChangeAnimationState(PLAYER_ATTACK);
         cooldownTimer = 0;
         // pool fireballs
         fireballs[FindFireball()].transform.position = firePoint.position;
         fireballs[FindFireball()].GetComponent<Projectile>().SetDirection(Mathf.Sign(transform.localScale.x));
     }
-
+    
+    //================================================================
+    // Retrieves fireball index from prefab List
+    //================================================================
     private int FindFireball()  {
         for (int i = 0; i < fireballs.Length; i++)
         {

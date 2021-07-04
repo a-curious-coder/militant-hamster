@@ -8,16 +8,22 @@ public class Health : MonoBehaviour
     public float currentHealth {get; private set;}
     private Animator anim;
     private bool dead = false;
+    private PlayerMovement playerMovement;
 
     [Header("iFrames")]
     [SerializeField] private float iFramesDuration;
     [SerializeField] private int numberOfFlashes;
     private SpriteRenderer spriteRend;
 
+    // Animation States
+    const string PLAYER_HURT = "Hurt";
+    const string PLAYER_DIE = "Die";
+    
     private void Awake()    {
         currentHealth = startingHealth;
         anim = GetComponent<Animator>();
         spriteRend = GetComponent<SpriteRenderer>();
+        playerMovement = GetComponent<PlayerMovement>();
     }
 
     public void TakeDamage(float _damage) {
@@ -26,14 +32,15 @@ public class Health : MonoBehaviour
 
         if(currentHealth > 0)   {
             // Player hurt
-            anim.SetTrigger("hurt");
+            // anim.SetTrigger("hurt");
+            playerMovement.ChangeAnimationState(PLAYER_HURT);
             StartCoroutine(Invulnerability());
-            // iframes
         } else {
             // Player dies
             if(!dead){
-                anim.SetTrigger("die");
-                GetComponent<PlayerMovement>().enabled = false;
+                // anim.SetTrigger("die");
+                playerMovement.ChangeAnimationState(PLAYER_DIE);
+                playerMovement.enabled = false;
                 dead = true;
             }
         }

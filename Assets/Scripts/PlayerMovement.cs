@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public class PlayerMovement : MonoBehaviour
 {   
@@ -6,12 +8,22 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float jumpPower;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask wallLayer;
-    private Rigidbody2D body;
+    
     private Animator anim;
+    
+    private Rigidbody2D body;
     private bool grounded;
     private BoxCollider2D boxCollider;
-    private float wallJumpCooldown;
+    // private float wallJumpCooldown;
     private float horizontalInput;
+
+    // Stores current state of player - to get around messy state machine animator layout
+    private string currentAnimaton;
+
+    // Animation States
+    const string PLAYER_IDLE = "Idle";
+    const string PLAYER_RUN = "Run";
+    const string PLAYER_JUMP = "Jump";
 
     private void Awake()    {
         // Get components checks player object for RigidBody2D and Animator
@@ -19,44 +31,55 @@ public class PlayerMovement : MonoBehaviour
         anim = GetComponent<Animator>();
         boxCollider = GetComponent<BoxCollider2D>();
     }
-
+    //================================================================
+    // Update is called once per frame
+    //================================================================
     private void Update()   {
-        
         horizontalInput = Input.GetAxis("Horizontal");
-        
+        body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
+    }
+    
+    //================================================================
+    // Physics based time step loop
+    //================================================================
+    private void FixedUpdate()  {
         // Flip player when moving left and right
-        if(horizontalInput > 0.01f)
+        if(horizontalInput > 0)
             transform.localScale = Vector3.one;
-        else if(horizontalInput < -0.01f)
+        else if(horizontalInput < 0)
             transform.localScale = new Vector3(-1, 1, 1);
 
-        // Set animator parameters
-        anim.SetBool("run", horizontalInput != 0);
-        anim.SetBool("grounded", isGrounded());
-
-        // Wall jump logic
-        if(wallJumpCooldown < 0.2f) {
-
-            body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
-
-            if(onWall() && !isGrounded())   {
-                body.gravityScale = 0;
-                body.velocity = Vector2.zero;
+        // If player is on the ground
+        if(isGrounded())  {
+            // Determine if player is idle or running and apply the corresponding animation
+            if(horizontalInput != 0)    {
+                ChangeAnimationState(PLAYER_RUN);
             } else {
-                body.gravityScale = 3;
+                ChangeAnimationState(PLAYER_IDLE);
             }
-
-            if(Input.GetKey(KeyCode.Space))
-                Jump();
-        } else {
-            wallJumpCooldown += Time.deltaTime;
         }
+        // Handles jump and animation
+        if(Input.GetKeyDown(KeyCode.Space)) Jump();
+
+        
+    }
+
+    //=====================================================
+    // Mini animation manager
+    //=====================================================
+    public void ChangeAnimationState(string newAnimation)
+    {
+        if (currentAnimaton == newAnimation) return;
+
+        anim.Play(newAnimation);
+        currentAnimaton = newAnimation;
     }
 
     private void Jump() {
         if(isGrounded())    {
             body.velocity = new Vector2(body.velocity.x, jumpPower);
-            anim.SetTrigger("jump");
+            // anim.SetTrigger("jump");
+            ChangeAnimationState(PLAYER_JUMP);
         } else if(onWall() && !isGrounded())    {
             if(horizontalInput == 0)    {
                 body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 10, 0);
@@ -65,7 +88,7 @@ public class PlayerMovement : MonoBehaviour
             } else {
                 body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 3, 6);
             }
-            wallJumpCooldown = 0;
+            // wallJumpCooldown = 0;
         }
     }
 
