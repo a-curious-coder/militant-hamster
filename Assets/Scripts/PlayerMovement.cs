@@ -9,6 +9,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask wallLayer;
     
+    // iOS controls
+    public Joystick joystick;
+
     private Animator anim;
     
     private Rigidbody2D body;
@@ -35,7 +38,8 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     //================================================================
     private void Update()   {
-        horizontalInput = Input.GetAxis("Horizontal");
+        // horizontalInput = Input.GetAxis("Horizontal");
+        horizontalInput = joystick.Horizontal;
         body.velocity = new Vector2(horizontalInput * speed, body.velocity.y);
     }
     
@@ -60,8 +64,6 @@ public class PlayerMovement : MonoBehaviour
         }
         // Handles jump and animation
         if(Input.GetKeyDown(KeyCode.Space)) Jump();
-
-        
     }
 
     //=====================================================

@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Ground
   - Fireball
+  - Enemy
+  - ShootButton
   layers:
   - Default
   - TransparentFX
