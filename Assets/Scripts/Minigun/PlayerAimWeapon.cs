@@ -34,12 +34,13 @@ public class PlayerAimWeapon : MonoBehaviour
 
     public void SetShoot()  {
         shootButtonPressed = !shootButtonPressed;
-        Debug.Log("Pressed and can shoot:" + canShoot);
+        // Debug.Log("Pressed and can shoot:" + shootButtonPressed);
     }
 
     private void Update() {
         HandleAiming();
         if(shootButtonPressed && canShoot)
+        // Debug.Log("Shooting");
             HandleShooting();
     }
 
@@ -49,26 +50,17 @@ public class PlayerAimWeapon : MonoBehaviour
         Vector3 touchPosition = new Vector3(shootJoystick.Horizontal, shootJoystick.Vertical, 0);
         // 
         Vector3 aimDirection = (touchPosition).normalized;
-        // Debug.Log("touchposition: " + touchPosition);
         // Calculates angle we're aiming the gun toward
         float angle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg;
-        // aimTransform.eulerAngles = new Vector3(180, 180, angle);
-        // If gun is facing left...
-        if(horizontalInput < 0) {
-            aimTransform.eulerAngles = new Vector3(180, 180, angle);
-            facingRight = false;
-            // Debug.Log("Facing Left: " + horizontalInput);
-        } else if(horizontalInput > 0) {
-            aimTransform.eulerAngles = new Vector3(0, 0, angle);
-            facingRight = true;
-            // Debug.Log("Facing Right: "  + horizontalInput);
-        } else if(horizontalInput == 0 && !facingRight) {
-            aimTransform.eulerAngles = new Vector3(180, 180, angle);
-            // Debug.Log("Idle Facing Left");
-        } else if(horizontalInput == 0 && facingRight){
-            aimTransform.eulerAngles = new Vector3(0, 0, angle);
-            // Debug.Log("Idle Facing Right");
-        }
+        aimTransform.eulerAngles = new Vector3(0, 0, angle);
+
+        // Vector3 aimLocalScale = Vector3.one;
+        // if(angle > 90 || angle < -90){
+        //     aimLocalScale.y = -1f;
+        // } else {
+        //     aimLocalScale.y = +1f;
+        // }
+        // aimTransform.localScale = aimLocalScale;
     }
 
     public void HandleShooting()   {

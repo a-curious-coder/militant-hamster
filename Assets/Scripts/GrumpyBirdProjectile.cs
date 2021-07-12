@@ -5,38 +5,32 @@ using UnityEngine;
 public class GrumpyBirdProjectile : MonoBehaviour
 {
 
-    public float speed;
+    [SerializeField] private GameObject hitEffect;
+    [SerializeField] private float delay = 0f;
+    [SerializeField] private float damage;
 
-    private Transform player;
-    private Vector2 target;
+    private float moveSpeed = 7f;
+    private Rigidbody2D rb;
+    private Player target;
+    private Vector2 moveDirection;
 
-    void Start()
-    {
-        // Retrieve player game object
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-        // Extract coordinates of the player to fire toward.
-        target = new Vector2(player.position.x, player.position.y);
-        // Vector3 dir = (target.position - )
+    void Start()    {
+        rb = GetComponent<Rigidbody2D>();
+        target = GameObject.FindObjectOfType<Player>();
+        moveDirection = (target.transform.position - transform.position).normalized * moveSpeed;
+        rb.velocity = new Vector2(moveDirection.x, moveDirection.y);
+        Destroy(gameObject, 3f);
     }
 
-    void Update()
-    {
-        transform.position = Vector2.MoveTowards(transform.position, target, speed * Time.deltaTime);
-
-        // if(transform.position.x == target.x && transform.position.y == target.y)  {
-        //     DestroyProjectile();
-        // }
-    }
-
-    void OnTriggerEnter2D(Collider2D other) {
-        if(other.CompareTag("Player"))  {
-            DestroyProjectile();
+    void OnTriggerEnter2D(Collider2D collision)  {
+        if(collision.gameObject.name.Contains("Fireball")) return;
+        // Start explosion
+        Instantiate(hitEffect, transform.position, Quaternion.identity);
+        // Destroy explosion effect after it's finished.
+        Destroy(gameObject);
+        if(collision.tag == "Player")   {
+            collision.GetComponent<Health>().TakeDamage(damage);
         }
     }
-
-    void DestroyProjectile()    {
-        Destroy(gameObject);
-    }
-
     
 }

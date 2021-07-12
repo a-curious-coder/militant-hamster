@@ -14,48 +14,76 @@ public class GrumpyBird : MonoBehaviour
     private float waitTime;
     public float startWaitTime;
     
-    // Shooting variables
-    private float timeBtwShots;
-    public float startTimeBtwShots;
-    public GameObject projectile;
-    public Transform firepoint;
-    public Transform player;
+
+    [SerializeField] private GameObject projectilePrefab;
+    [SerializeField] private float projectileForce = 2;
+
+    private Transform firePoint;
+    private Transform player;
 
     // Movement variables
     public float speed;
     private float horizontalInput;
+    
+
+    float fireRate;
+    float nextFire;
+
+    // Health
+    private float maxHealth = 100;
+    private float currentHealth;
 
     // Start is called before the first frame update
-    void Start()
-    {
+    void Start()    {
+        fireRate = 1f;
+        nextFire = Time.time;
+
         moveSpots[0] = GameObject.Find("MovePoint").transform;
         moveSpots[1] = GameObject.Find("MovePoint1").transform;
         moveSpots[2] = GameObject.Find("MovePoint2").transform;
         moveSpots[3] = GameObject.Find("MovePoint3").transform;
         moveSpots[4] = GameObject.Find("MovePoint4").transform;
         moveSpots[5] = GameObject.Find("MovePoint5").transform;
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-        firepoint = GameObject.FindGameObjectWithTag("GBFirePoint").transform;
-        waitTime = startWaitTime;
         randomSpot = Random.Range(0, moveSpots.Length);
+
+        player = gameObject.transform.Find("Player");
+        firePoint = gameObject.transform.Find("GBFirePoint");
+        
+        waitTime = startWaitTime;
+        // Initialise Health
+        currentHealth = maxHealth;
     }
+
 
     // Update is called once per frame
     void Update()   {
         // FollowPlayer();
         Patrol();
-        if(timeBtwShots <= 0)   {
-            // Shoot - aim at player and shoot - don't follow.
-            // Instantiate(WhatDoWeSpawn, Position, Rotation)
-            Instantiate(projectile, firepoint.position, Quaternion.identity);
-            timeBtwShots = startTimeBtwShots;
-        } else {
-            timeBtwShots -= Time.deltaTime;
+        HandleShooting();
+    }
+
+    void HandleShooting()   {
+        if(Time.time > nextFire)    {
+            Instantiate(projectilePrefab, transform.position, Quaternion.identity);
+            nextFire = Time.time + fireRate;
+            // Debug.Log("Enemy projectile fired");
         }
     }
 
-    void TakeDamage()   {
-        
+    void OnCollisionEnter2D(Collision2D col)    {
+        if(col.gameObject.tag.Equals("Bullet")) {
+            Destroy(col.gameObject);
+            Destroy(gameObject);
+            Debug.Log("Hit");
+        }
+    }
+
+    public void TakeDamage(float _damage)   {
+        currentHealth -= _damage;
+        if(currentHealth <= 0)  {
+            Destroy(gameObject);
+        }
+        Debug.Log("Enemy has taken damage");
     }
 
     void FlipEnemy()    {

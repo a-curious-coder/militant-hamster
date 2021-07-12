@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 2964877117041052907}
   m_Layer: 0
   m_Name: Bullet
-  m_TagString: Untagged
+  m_TagString: Bullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -42,7 +42,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3045406159091800303}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
@@ -95,7 +95,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitEffect: {fileID: 4960892515718387333, guid: 1d7cbc89d2bb04a91998719308d114cf, type: 3}
-  delay: 0
 --- !u!82 &2964877117041052907
 AudioSource:
   m_ObjectHideFlags: 0

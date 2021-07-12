@@ -4,27 +4,20 @@ using UnityEngine;
 
 public class Parallax : MonoBehaviour
 {
-
-    private float length, startPos;
-    [Header("Camera and Effect")]
-    public GameObject cam;
-    public float parallaxEffect;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        startPos = transform.position.x;
-        length = GetComponent<SpriteRenderer>().bounds.size.x;
-    }
+    public float additionalScrollSpeed;
+    public GameObject[] backgrounds;
+    // Scroll speed for each background
+    public float[] scrollSpeed;
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        float temp = (cam.transform.position.x * (1 - parallaxEffect));
-        float dist = (cam.transform.position.x * parallaxEffect);
-        transform.position = new Vector3(startPos + dist, transform.position.y, transform.position.z);
+        for(int b = 0; b < backgrounds.Length; b++) {
+            Renderer rend = backgrounds[b].GetComponent<Renderer>();
 
-        if(temp > startPos) startPos += length;
-        else if (temp < startPos - length) startPos -= length;
+            float offset = Time.time * (scrollSpeed[b] * additionalScrollSpeed);
+
+            rend.material.SetTextureOffset("_MainTex", new Vector2(offset, 0));
+        }
     }
 }

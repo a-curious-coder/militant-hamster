@@ -8,7 +8,7 @@ public class Health : MonoBehaviour
     public float currentHealth {get; private set;}
     private Animator anim;
     private bool dead = false;
-    private PlayerMovement playerMovement;
+    private Player playerMovement;
 
     [Header("iFrames")]
     [SerializeField] private float iFramesDuration;
@@ -23,7 +23,7 @@ public class Health : MonoBehaviour
         currentHealth = startingHealth;
         anim = GetComponent<Animator>();
         spriteRend = GetComponent<SpriteRenderer>();
-        playerMovement = GetComponent<PlayerMovement>();
+        playerMovement = GetComponent<Player>();
     }
 
     public void TakeDamage(float _damage) {

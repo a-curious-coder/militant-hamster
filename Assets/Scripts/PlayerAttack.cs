@@ -9,7 +9,7 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] private GameObject[] fireballs;
 
     private Animator anim;
-    private PlayerMovement playerMovement;
+    private Player playerMovement;
     private float cooldownTimer = Mathf.Infinity;
 
     // Animation State
@@ -17,7 +17,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void Awake() {
         anim = GetComponent<Animator>();
-        playerMovement = GetComponent<PlayerMovement>();
+        playerMovement = GetComponent<Player>();
     }
 
     private void Update() {

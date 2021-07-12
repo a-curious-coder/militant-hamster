@@ -8,6 +8,8 @@ TagManager:
   - Fireball
   - Enemy
   - ShootButton
+  - GBFirePoint
+  - Bullet
   layers:
   - Default
   - TransparentFX

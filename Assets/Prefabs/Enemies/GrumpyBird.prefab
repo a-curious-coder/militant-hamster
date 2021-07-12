@@ -126,10 +126,9 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   startWaitTime: 0
-  startTimeBtwShots: 1.75
-  projectile: {fileID: 6833907409247825567, guid: 59ddeae0ab9a74e6798b7c2b62046ab4, type: 3}
-  firepoint: {fileID: 315255562246759086}
-  player: {fileID: 0}
+  startTimeBtwShots: 1
+  projectilePrefab: {fileID: 6833907409247825567, guid: 59ddeae0ab9a74e6798b7c2b62046ab4, type: 3}
+  projectileForce: 0.002
   speed: 2
 --- !u!1 &315255562246759073
 GameObject:
