@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GrumpyBird : MonoBehaviour
+public class GrumpyBird : Enemy
 {
     // Follow player variables
     public float stoppingDistance;
@@ -17,6 +17,8 @@ public class GrumpyBird : MonoBehaviour
 
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private float projectileForce = 2;
+    [SerializeField] private float fireRate;
+    private float nextFire;
 
     private Transform firePoint;
     private Transform player;
@@ -24,18 +26,11 @@ public class GrumpyBird : MonoBehaviour
     // Movement variables
     public float speed;
     private float horizontalInput;
-    
-
-    float fireRate;
-    float nextFire;
-
-    // Health
-    private float maxHealth = 100;
-    private float currentHealth;
 
     // Start is called before the first frame update
     void Start()    {
-        fireRate = 1f;
+        // Set this enemy's health to maxHealth value
+        health = maxHealth;
         nextFire = Time.time;
 
         moveSpots[0] = GameObject.Find("MovePoint").transform;
@@ -50,8 +45,6 @@ public class GrumpyBird : MonoBehaviour
         firePoint = gameObject.transform.Find("GBFirePoint");
         
         waitTime = startWaitTime;
-        // Initialise Health
-        currentHealth = maxHealth;
     }
 
 
@@ -66,29 +59,15 @@ public class GrumpyBird : MonoBehaviour
         if(Time.time > nextFire)    {
             Instantiate(projectilePrefab, transform.position, Quaternion.identity);
             nextFire = Time.time + fireRate;
-            // Debug.Log("Enemy projectile fired");
         }
-    }
-
-    void OnCollisionEnter2D(Collision2D col)    {
-        if(col.gameObject.tag.Equals("Bullet")) {
-            Destroy(col.gameObject);
-            Destroy(gameObject);
-            Debug.Log("Hit");
-        }
-    }
-
-    public void TakeDamage(float _damage)   {
-        currentHealth -= _damage;
-        if(currentHealth <= 0)  {
-            Destroy(gameObject);
-        }
-        Debug.Log("Enemy has taken damage");
     }
 
     void FlipEnemy()    {
-        // If the movespot location is to the right of the enemy, face the enemy right
-        transform.localScale = new Vector2(-transform.localScale.x, transform.localScale.y);
+        if(moveSpots[randomSpot].position.x < 0)
+            // If the movespot location is to the right of the enemy, face the enemy right
+            transform.localScale = new Vector2(-transform.localScale.x, transform.localScale.y);
+        else
+            transform.localScale = new Vector2(+transform.localScale.x, transform.localScale.y);
     }
 
     void Patrol()    {

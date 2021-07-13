@@ -23,7 +23,10 @@ public class GrumpyBirdProjectile : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D collision)  {
-        if(collision.gameObject.name.Contains("Fireball")) return;
+        // If fireball collides with another fireball or an enemy, return.
+        if(collision.gameObject.tag == "Fireball" || collision.gameObject.tag == "Enemy") 
+            return;
+        Debug.Log("Fireball Collision with: " + collision.gameObject.tag);
         // Start explosion
         Instantiate(hitEffect, transform.position, Quaternion.identity);
         // Destroy explosion effect after it's finished.
