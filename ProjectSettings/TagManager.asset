@@ -10,6 +10,8 @@ TagManager:
   - ShootButton
   - GBFirePoint
   - Bullet
+  - Background
+  - Bolt
   layers:
   - Default
   - TransparentFX
